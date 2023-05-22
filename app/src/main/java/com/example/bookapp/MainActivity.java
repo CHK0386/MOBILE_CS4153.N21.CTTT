@@ -7,6 +7,7 @@ import android.view.View;
 
 import com.example.bookapp.databinding.ActivityMainBinding;
 
+
 public class MainActivity extends AppCompatActivity {
     //view binding
     private ActivityMainBinding binding;
@@ -24,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         //handle skipBtn.click, start continue without login screen
+
         binding.skipBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
