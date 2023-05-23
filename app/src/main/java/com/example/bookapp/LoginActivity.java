@@ -60,8 +60,6 @@ public class LoginActivity extends AppCompatActivity {
         TextView messageTextView = new TextView(this);
         messageTextView.setText("Please wait...");
 
-        // Add the TextView to the LinearLayout
-        layout.addView(binding.getRoot());
 
         // Set the LinearLayout as the content view of your activity
         setContentView(layout);
