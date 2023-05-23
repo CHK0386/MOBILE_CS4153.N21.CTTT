@@ -5,21 +5,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/back01"
-    tools:context=".DashboardAdminActivity">
-    
+    tools:context=".DashBoardUserActivity">
+
     <RelativeLayout
         android:id="@+id/toolbarRl"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         android:background="@drawable/shape_toolbar02">
-        
+
         <TextView
             android:id="@+id/titleTv"
             android:layout_width="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_centerHorizontal="true"
             android:layout_height="wrap_content"
-            android:text="Dashboard Admin"
+            android:text="Dashboard User"
             android:textColor="@color/white"/>
 
         <TextView
@@ -40,7 +40,7 @@
             android:layout_marginEnd="10dp"
             android:background="@android:color/transparent"
             android:src="@drawable/ic_logout_white"
-            tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+            tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
 
 
     </RelativeLayout>
