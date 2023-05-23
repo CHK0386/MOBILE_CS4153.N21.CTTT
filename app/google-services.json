@@ -7,17 +7,17 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:939938146805:android:a9a3b0f5e0a3cd4425d8bc",
+        "mobilesdk_app_id": "1:939938146805:android:8d94bd5b4c506cec25d8bc",
         "android_client_info": {
-          "package_name": "com.android.application"
+          "package_name": "com.example.bookapp"
         }
       },
       "oauth_client": [
         {
-          "client_id": "939938146805-kghp82f1h2d63b4n9j9qlpnd3c7bdltl.apps.googleusercontent.com",
+          "client_id": "939938146805-p6vbgl3ejfchmgkouehoj4uamv257dpj.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.android.application",
+            "package_name": "com.example.bookapp",
             "certificate_hash": "0ba0507363a5492219854101116ce9ac25a7b773"
           }
         },
