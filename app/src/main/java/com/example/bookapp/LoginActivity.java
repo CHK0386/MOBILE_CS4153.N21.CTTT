@@ -1,16 +1,17 @@
 package com.example.bookapp;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Patterns;
 import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.bookapp.databinding.ActivityLoginBinding;
@@ -33,7 +34,8 @@ public class LoginActivity extends AppCompatActivity {
     //firebase auth
     private FirebaseAuth firebaseAuth;
 
-    private ProgressBar progressBar;
+    // AlertDialog
+    private AlertDialog dialog;
 
 
     @SuppressLint("SetTextI18n")
@@ -47,29 +49,39 @@ public class LoginActivity extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
 
 
-        // Create a LinearLayout and set its orientation
-        LinearLayout layout = new LinearLayout(this);
-        layout.setOrientation(LinearLayout.VERTICAL);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Please wait...")
+                .setMessage("Please wait...")
+                .setIcon(R.drawable.dialog_icon)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Action to perform when OK button is clicked
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Action to perform when Cancel button is clicked
+                    }
+                });
+        dialog = builder.create();
 
-        //setup progressBar
-        progressBar = new ProgressBar(this);
-        progressBar.setVisibility(View.VISIBLE);
-
-
-        // Create a TextView for the message and set its text
-        TextView messageTextView = new TextView(this);
-        messageTextView.setText("Please wait...");
-
-
-        // Set the LinearLayout as the content view of your activity
-        setContentView(layout);
 
 
         //handle click , go to register screen
-        binding.noAccountTv.setOnClickListener(view -> startActivity(new Intent(LoginActivity.this, RegisterActivity.class)));
+        binding.noAccountTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(LoginActivity.this,RegisterActivity.class));
+            }
+        });
 
         //handle click , begin login
-        binding.loginBtn.setOnClickListener(view -> validateData());
+        binding.loginBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                validateData();
+            }
+        });
     }
 
     private String email ="" ,password ="";
@@ -93,22 +105,31 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void loginUser() {
-        progressBar.setVisibility(View.GONE);
+        dialog.setMessage("Logging in...");
+        dialog.show();
 
         //login user
         firebaseAuth.signInWithEmailAndPassword(email,password)
-                .addOnSuccessListener(authResult -> checkUser())
-                .addOnFailureListener(e -> {
-                    progressBar.setVisibility(View.GONE);
-                    Toast.makeText(LoginActivity.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+                .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                    @Override
+                    public void onSuccess(AuthResult authResult) {
+                        checkUser();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        dialog.dismiss();
+                        Toast.makeText(LoginActivity.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
 
+                    }
                 });
 
 
     }
 
     private void checkUser() {
-        progressBar.setVisibility(View.GONE);
+//        progressBar.setVisibility(View.GONE);
         //check if user is user or admin from realtime database
         //check current user
         FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
@@ -119,7 +140,7 @@ public class LoginActivity extends AppCompatActivity {
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot snapshot) {
-                        progressBar.setVisibility(View.GONE);
+                        dialog.dismiss();
                         //get user type
                         String userType = ""+snapshot.child("userType").getValue();
                         //check user type
