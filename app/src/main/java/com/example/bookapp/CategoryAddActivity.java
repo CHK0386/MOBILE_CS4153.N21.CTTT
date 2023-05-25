@@ -1,13 +1,13 @@
 package com.example.bookapp;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.bookapp.databinding.ActivityCategoryAddBinding;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -95,7 +95,7 @@ public class CategoryAddActivity extends AppCompatActivity {
         hashMap.put("uid", ""+firebaseAuth.getUid());
 
         //add to firebase db...Database Root > Categories > categoryId > category info
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Catgories");
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Categories");
         ref.child(""+timestamp)
                 .setValue(hashMap)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {

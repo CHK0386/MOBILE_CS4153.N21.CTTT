@@ -75,7 +75,7 @@ public class AdapterCategory extends RecyclerView.Adapter<AdapterCategory.Holder
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 //begin delete
                                 Toast.makeText(context, "Deleting...", Toast.LENGTH_SHORT).show();
-                                deleteCatgory(model, holder);
+                                deleteCategory(model, holder);
                             }
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -89,11 +89,11 @@ public class AdapterCategory extends RecyclerView.Adapter<AdapterCategory.Holder
         });
     }
 
-    private void deleteCatgory(ModelCategory model, HolderCategory holder) {
+    private void deleteCategory(ModelCategory model, HolderCategory holder) {
         //get id of category to delete
-        //Firebase DB > Catgories > categoryId
+        //Firebase DB > Categories > categoryId
         String id = model.getId();
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Catgories");
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Categories");
         ref.child(id)
                 .removeValue()
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
