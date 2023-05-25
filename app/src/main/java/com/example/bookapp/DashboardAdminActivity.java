@@ -1,13 +1,13 @@
 package com.example.bookapp;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.bookapp.databinding.ActivityDashboardAdminBinding;
 import com.google.firebase.auth.FirebaseAuth;
@@ -83,6 +83,14 @@ public class DashboardAdminActivity extends AppCompatActivity {
                 startActivity(new Intent(DashboardAdminActivity.this, CategoryAddActivity.class));
             }
         });
+        //handle click , start pdf add screen
+        binding.addPdfFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(DashboardAdminActivity.this, PdfAddActivity.class));
+            }
+        });
+
     }
 
     private void loadCategories() {

@@ -48,7 +48,7 @@ public class LoginActivity extends AppCompatActivity {
         //init firebase auth
         firebaseAuth = FirebaseAuth.getInstance();
 
-
+        //setup AlertDialog
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Please wait...")
                 .setMessage("Please wait...")
