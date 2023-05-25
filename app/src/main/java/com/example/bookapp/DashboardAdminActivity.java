@@ -98,7 +98,7 @@ public class DashboardAdminActivity extends AppCompatActivity {
         categoryArrayList = new ArrayList<>();
 
         //get all categories from firebase > Categories
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Catgories");
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Categories");
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
