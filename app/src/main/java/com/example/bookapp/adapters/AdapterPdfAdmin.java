@@ -137,7 +137,13 @@ public class AdapterPdfAdmin extends RecyclerView.Adapter<AdapterPdfAdmin.Holder
 
                         } else if (which==1) {
                             //Delete Clicked
-                            deleteBook(model,holder);
+                            MyApplication.deleteBook(
+                                    context,
+                                    ""+bookId,
+                                    ""+bookUrl,
+                                    ""+bookTitle
+                            );
+                            //deleteBook(model,holder);
                             
                         }
                     }
@@ -146,59 +152,7 @@ public class AdapterPdfAdmin extends RecyclerView.Adapter<AdapterPdfAdmin.Holder
 
     }
 
-    private void deleteBook(ModelPdf model, HolderPdfAdmin holder) {
-        String bookId = model.getId();
-        String bookUrl = model.getUrl();
-        String bookTitle = model.getTitle();
 
-        Log.d(TAG, "deleteBook: Deleting...");
-        progressDialog.setMessage("Deleting" +bookTitle+"..."); //e.g . Deleting Book ABC...
-        progressDialog.show();
-
-        Log.d(TAG, "deleteBook: Deleting from storage...");
-        StorageReference storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(bookUrl);
-        storageReference.delete()
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        Log.d(TAG, "onSuccess: Deleted from storage");
-
-                        Log.d(TAG, "onSuccess: Now deleting info from db");
-                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Books");
-                        reference.child(bookId)
-                                .removeValue()
-                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void unused) {
-                                        Log.d(TAG, "onSuccess: Delete from db too");
-                                        progressDialog.dismiss();
-                                        Toast.makeText(context, "Book Deleted Successfully...", Toast.LENGTH_SHORT).show();
-
-                                    }
-                                })
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Log.d(TAG, "onFailure: Failed to deleted from db due to"+e.getMessage());
-                                        progressDialog.dismiss();
-                                        Toast.makeText(context, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
-                                        
-                                    }
-                                });
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d(TAG, "onFailure: Failed to delete from storage due to"+e.getMessage());
-                        progressDialog.dismiss();
-                        Toast.makeText(context, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
-
-                    }
-                });
-
-
-    }
 
     private void loadPdfSize(ModelPdf model, HolderPdfAdmin holder) {
         //using url => get file and its metadata from firebase storage

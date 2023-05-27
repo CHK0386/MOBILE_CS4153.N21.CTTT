@@ -207,6 +207,9 @@ public class PdfAddActivity extends AppCompatActivity {
         hashMap.put("categoryId",""+selectedcategoryId);
         hashMap.put("url",""+uploadedPdfUrl);
         hashMap.put("timestamp",timestamp);
+        hashMap.put("viewCount",0);
+        hashMap.put("downloadCount",0);
+
 
         //db reference  DB > BOOKS
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Books");
