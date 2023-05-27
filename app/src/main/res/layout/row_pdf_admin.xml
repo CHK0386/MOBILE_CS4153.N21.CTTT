@@ -28,7 +28,7 @@
                 android:layout_height="match_parent"
                 tools:ignore="MissingClass" />
 
-
+            <!--Progress bar-->
             <ProgressBar
                 android:id="@+id/progressBar"
                 android:layout_width="match_parent"

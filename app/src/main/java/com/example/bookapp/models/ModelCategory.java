@@ -1,4 +1,4 @@
-package com.example.bookapp;
+package com.example.bookapp.models;
 
 public class ModelCategory {
     // make sure to use same spelling for model variables as in firebase
