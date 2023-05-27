@@ -7,6 +7,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -17,9 +19,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bookapp.MyApplication;
 import com.example.bookapp.databinding.RowPdfAdminBinding;
+import com.example.bookapp.filters.FilterPdfAdmin;
 import com.example.bookapp.models.ModelPdf;
 import com.github.barteksc.pdfviewer.PDFView;
 import com.github.barteksc.pdfviewer.listener.OnErrorListener;
+import com.github.barteksc.pdfviewer.listener.OnLoadCompleteListener;
 import com.github.barteksc.pdfviewer.listener.OnPageErrorListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -34,21 +38,24 @@ import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 
-public class AdapterPdfAdmin extends RecyclerView.Adapter<AdapterPdfAdmin.HolderPdfAdmin> {
+public class AdapterPdfAdmin extends RecyclerView.Adapter<AdapterPdfAdmin.HolderPdfAdmin> implements Filterable {
 
     //context
     Context context;
     //arraylist to hold list of data of type ModelPdf
-    private ArrayList<ModelPdf> pdfArrayList;
+    public ArrayList<ModelPdf> pdfArrayList, filterlist;
 
     //view binding row_pdf_main.xml
     private RowPdfAdminBinding binding;
+
+    private FilterPdfAdmin filter;
 
     private static final String TAG = "PDF_ADAPTER_TAG";
     //constructor
     public AdapterPdfAdmin(Context context, ArrayList<ModelPdf> pdfArrayList) {
         this.context = context;
         this.pdfArrayList = pdfArrayList;
+        this.filterlist = pdfArrayList;
     }
 
     @NonNull
@@ -142,13 +149,26 @@ public class AdapterPdfAdmin extends RecyclerView.Adapter<AdapterPdfAdmin.Holder
                                 .onError(new OnErrorListener() {
                                     @Override
                                     public void onError(Throwable t) {
+                                        //hide progress
+                                        holder.progressBar.setVisibility(View.INVISIBLE);
                                         Log.d(TAG, "onError: "+t.getMessage());
                                     }
                                 })
                                 .onPageError(new OnPageErrorListener() {
                                     @Override
                                     public void onPageError(int page, Throwable t) {
+                                        //hide progress
+                                        holder.progressBar.setVisibility(View.INVISIBLE);
                                         Log.d(TAG, "onPageError: "+t.getMessage());
+                                    }
+                                })
+                                .onLoad(new OnLoadCompleteListener() {
+                                    @Override
+                                    public void loadComplete(int nbPages) {
+                                        //pdf loaded
+                                        //hide progress
+                                        holder.progressBar.setVisibility(View.INVISIBLE);
+                                        Log.d(TAG, "loadComplete: pdf loaded");
                                     }
                                 })
                                 .load();
@@ -157,6 +177,8 @@ public class AdapterPdfAdmin extends RecyclerView.Adapter<AdapterPdfAdmin.Holder
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
+                        //hide progress
+                        holder.progressBar.setVisibility(View.INVISIBLE);
                         Log.d(TAG, "onFailure: failed getting file from url due to "+e.getMessage());
                     }
                 });
@@ -189,6 +211,14 @@ public class AdapterPdfAdmin extends RecyclerView.Adapter<AdapterPdfAdmin.Holder
     @Override
     public int getItemCount() {
         return pdfArrayList.size(); //return number of record | list size
+    }
+
+    @Override
+    public Filter getFilter() {
+        if(filter ==  null){
+            filter = new FilterPdfAdmin(filterlist, this);
+        }
+        return filter;
     }
 
     /*View Holder class for row_pdf_main.xml*/

@@ -16,6 +16,7 @@
 
         <!-- Back Btn -->
         <ImageButton
+            android:id="@+id/backBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_back_white"
@@ -42,7 +43,8 @@
             android:layout_height="wrap_content"
             android:textColor="@color/white"
             android:layout_below="@id/titleTv"
-            android:layout_centerHorizontal="true" />
+            android:layout_centerHorizontal="true"
+            android:text="Category"/>
 
     </RelativeLayout>
 
