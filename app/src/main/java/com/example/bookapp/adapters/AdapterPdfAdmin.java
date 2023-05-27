@@ -2,7 +2,10 @@ package com.example.bookapp.adapters;
 
 import static com.example.bookapp.Constants.MAX_BYTES_PDF;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,9 +18,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bookapp.MyApplication;
+import com.example.bookapp.PdfEditActivity;
 import com.example.bookapp.databinding.RowPdfAdminBinding;
 import com.example.bookapp.filters.FilterPdfAdmin;
 import com.example.bookapp.models.ModelPdf;
@@ -51,11 +56,21 @@ public class AdapterPdfAdmin extends RecyclerView.Adapter<AdapterPdfAdmin.Holder
     private FilterPdfAdmin filter;
 
     private static final String TAG = "PDF_ADAPTER_TAG";
+
+    //Progess
+    private ProgressDialog progressDialog;
+
     //constructor
     public AdapterPdfAdmin(Context context, ArrayList<ModelPdf> pdfArrayList) {
         this.context = context;
         this.pdfArrayList = pdfArrayList;
         this.filterlist = pdfArrayList;
+
+        //init progress dialog
+        progressDialog = new ProgressDialog(context);
+        progressDialog.setTitle("Please wait");
+        progressDialog.setCanceledOnTouchOutside(false);
+        
     }
 
     @NonNull
@@ -88,6 +103,101 @@ public class AdapterPdfAdmin extends RecyclerView.Adapter<AdapterPdfAdmin.Holder
         loadCategory(model, holder);
         loadPdfFromUrl(model, holder);
         loadPdfSize(model, holder);
+
+        //handle click , show dialog with options 1)Edit 2)Delete
+        holder.moreBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                moreOptionsDialog(model,holder);
+            }
+        });
+    }
+
+    private void moreOptionsDialog(ModelPdf model, HolderPdfAdmin holder) {
+
+        String bookId = model.getId();
+        String bookUrl = model.getUrl();
+        String bookTitle = model.getTitle();
+
+        //options to show in dialog
+        String[] options = {"Edit" ,"Delete"};
+
+        //AlertDialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("Choose Options")
+                .setItems(options, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int which) {
+                        //handle dialog option click
+                        if (which==0){
+                            //Edit clicked , Open PdfEditActivity to edit the book info
+                            Intent intent = new Intent(context, PdfEditActivity.class);
+                            intent.putExtra("bookId",bookId);
+                            context.startActivity(intent);
+
+                        } else if (which==1) {
+                            //Delete Clicked
+                            deleteBook(model,holder);
+                            
+                        }
+                    }
+                })
+                .show();
+
+    }
+
+    private void deleteBook(ModelPdf model, HolderPdfAdmin holder) {
+        String bookId = model.getId();
+        String bookUrl = model.getUrl();
+        String bookTitle = model.getTitle();
+
+        Log.d(TAG, "deleteBook: Deleting...");
+        progressDialog.setMessage("Deleting" +bookTitle+"..."); //e.g . Deleting Book ABC...
+        progressDialog.show();
+
+        Log.d(TAG, "deleteBook: Deleting from storage...");
+        StorageReference storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(bookUrl);
+        storageReference.delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Log.d(TAG, "onSuccess: Deleted from storage");
+
+                        Log.d(TAG, "onSuccess: Now deleting info from db");
+                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Books");
+                        reference.child(bookId)
+                                .removeValue()
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        Log.d(TAG, "onSuccess: Delete from db too");
+                                        progressDialog.dismiss();
+                                        Toast.makeText(context, "Book Deleted Successfully...", Toast.LENGTH_SHORT).show();
+
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.d(TAG, "onFailure: Failed to deleted from db due to"+e.getMessage());
+                                        progressDialog.dismiss();
+                                        Toast.makeText(context, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+                                        
+                                    }
+                                });
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, "onFailure: Failed to delete from storage due to"+e.getMessage());
+                        progressDialog.dismiss();
+                        Toast.makeText(context, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+
+                    }
+                });
+
+
     }
 
     private void loadPdfSize(ModelPdf model, HolderPdfAdmin holder) {
