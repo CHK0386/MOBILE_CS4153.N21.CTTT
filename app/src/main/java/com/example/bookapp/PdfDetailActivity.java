@@ -1,11 +1,11 @@
 package com.example.bookapp;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.bookapp.databinding.ActivityPdfDetailBinding;
 import com.google.firebase.database.DataSnapshot;
@@ -26,7 +26,7 @@ public class PdfDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityPdfDetailBinding.inflate(getLayoutInflater());
-        setContentView(R.layout.activity_pdf_detail);
+        setContentView(binding.getRoot());
 
         //get data from intent e.g. bookId
         Intent intent = getIntent();
@@ -41,6 +41,16 @@ public class PdfDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 onBackPressed();
+            }
+        });
+
+        //handle click, open to view pdf
+        binding.readBookBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent1 = new Intent(PdfDetailActivity.this,PdfViewActivity.class);
+                intent1.putExtra("bookId", bookId);
+                startActivity(intent1);
             }
         });
     }

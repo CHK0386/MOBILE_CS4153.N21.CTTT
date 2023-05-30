@@ -2,9 +2,7 @@ package com.example.bookapp.filters;
 
 import android.widget.Filter;
 
-import com.example.bookapp.adapters.AdapterCategory;
 import com.example.bookapp.adapters.AdapterPdfAdmin;
-import com.example.bookapp.models.ModelCategory;
 import com.example.bookapp.models.ModelPdf;
 
 import java.util.ArrayList;
