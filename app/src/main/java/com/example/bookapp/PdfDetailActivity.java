@@ -4,6 +4,7 @@ import android.app.DownloadManager;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -69,11 +70,14 @@ public class PdfDetailActivity extends AppCompatActivity {
         DownloadManager downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
         if (downloadManager != null) {
             downloadManager.enqueue(request);
+            Log.d(TAG_DOWNLOAD, "downloadBook: Permission already granted,can download book");
             Toast.makeText(this, "Download started", Toast.LENGTH_SHORT).show();
         } else {
+            Log.d(TAG_DOWNLOAD, "downloadBook: Permission was not granted,request permission...");
             Toast.makeText(this, "Failed to start download", Toast.LENGTH_SHORT).show();
         }
     }
+
 
     private void loadBookDetails() {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Books");
