@@ -1,8 +1,11 @@
 package com.example.bookapp;
 
+import android.app.DownloadManager;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,11 +19,13 @@ import com.google.firebase.database.ValueEventListener;
 
 public class PdfDetailActivity extends AppCompatActivity {
 
-    //view binding
+    // View binding
     private ActivityPdfDetailBinding binding;
 
-    //pdf id, get from intent
-    String bookId;
+    // PDF id, get from intent
+    String bookId, bookTitle, bookUrl;
+
+    private static final String TAG_DOWNLOAD = "DOWNLOAD_TAG";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,80 +33,84 @@ public class PdfDetailActivity extends AppCompatActivity {
         binding = ActivityPdfDetailBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        //get data from intent e.g. bookId
+        // Get data from intent e.g., bookId
         Intent intent = getIntent();
         bookId = intent.getStringExtra("bookId");
 
+        // At start, hide the download button, as we need the book URL that we will load later in the function loadBookDetails()
+        binding.downloadBookBtn.setVisibility(View.GONE);
+
         loadBookDetails();
-        //increment book view count, whenever this page starts
+        // Increment book view count whenever this page starts
         MyApplication.incrementBookViewCount(bookId);
 
-        //handle click, go back
-        binding.backBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
-            }
+        // Handle click, go back
+        binding.backBtn.setOnClickListener(view -> onBackPressed());
+
+        // Handle click, open to view PDF
+        binding.readBookBtn.setOnClickListener(view -> {
+            Intent intent1 = new Intent(PdfDetailActivity.this, PdfViewActivity.class);
+            intent1.putExtra("bookId", bookId);
+            startActivity(intent1);
         });
 
-        //handle click, open to view pdf
-        binding.readBookBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent1 = new Intent(PdfDetailActivity.this,PdfViewActivity.class);
-                intent1.putExtra("bookId", bookId);
-                startActivity(intent1);
-            }
+        // Handle click, download PDF
+        binding.downloadBookBtn.setOnClickListener(view -> {
+            downloadBook();
         });
+    }
+
+    private void downloadBook() {
+        Uri uri = Uri.parse(bookUrl);
+        DownloadManager.Request request = new DownloadManager.Request(uri);
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+        request.setDestinationInExternalPublicDir("Download", bookTitle + ".pdf");
+
+        DownloadManager downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+        if (downloadManager != null) {
+            downloadManager.enqueue(request);
+            Toast.makeText(this, "Download started", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Failed to start download", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void loadBookDetails() {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Books");
-        ref.child(bookId)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        //get data
-                        String title = ""+snapshot.child("title").getValue();
-                        String description = ""+snapshot.child("description").getValue();
-                        String categoryId = ""+snapshot.child("categoryId").getValue();
-                        String viewCount = ""+snapshot.child("viewCount").getValue();
-                        String downloadCount = ""+snapshot.child("downloadCount").getValue();
-                        String url = ""+snapshot.child("url").getValue();
-                        String timestamp = ""+snapshot.child("timestamp").getValue();
+        ref.child(bookId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                // Get data
+                bookTitle = "" + snapshot.child("title").getValue();
+                String description = "" + snapshot.child("description").getValue();
+                String categoryId = "" + snapshot.child("categoryId").getValue();
+                String viewCount = "" + snapshot.child("viewCount").getValue();
+                String downloadCount = "" + snapshot.child("downloadCount").getValue();
+                bookUrl = "" + snapshot.child("url").getValue();
+                String timestamp = "" + snapshot.child("timestamp").getValue();
 
-                        //format date
-                        String date = MyApplication.formatTimestamp(Long.parseLong(timestamp));
+                // Required data is loaded, show the download button
+                binding.downloadBookBtn.setVisibility(View.VISIBLE);
 
-                        MyApplication.loadCategory(
-                                ""+categoryId,
-                                binding.categoryTv
-                        );
-                        MyApplication.loadPdfFromUrlSinglePage(
-                                ""+url,
-                                ""+title,
-                                binding.pdfView,
-                                binding.progressBar
-                        );
-                        MyApplication.loadPdfSize(
-                                ""+url,
-                                ""+title,
-                                binding.sizeTv
-                        );
+                // Format date
+                String date = MyApplication.formatTimestamp(Long.parseLong(timestamp));
 
-                        //set data
-                        binding.titleTv.setText(title);
-                        binding.descriptionTv.setText(description);
-                        binding.viewsTv.setText(viewCount.replace("null", "N/A"));
-                        binding.downloadsTv.setText(downloadCount.replace("null", "N/A"));
-                        binding.dateTv.setText(date);
+                MyApplication.loadCategory("" + categoryId, binding.categoryTv);
+                MyApplication.loadPdfFromUrlSinglePage("" + bookUrl, "" + bookTitle, binding.pdfView, binding.progressBar);
+                MyApplication.loadPdfSize("" + bookUrl, "" + bookTitle, binding.sizeTv);
 
-                    }
+                // Set data
+                binding.titleTv.setText(bookTitle);
+                binding.descriptionTv.setText(description);
+                binding.viewsTv.setText(viewCount.replace("null", "N/A"));
+                binding.downloadsTv.setText(downloadCount.replace("null", "N/A"));
+                binding.dateTv.setText(date);
+            }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
 
-                    }
-                });
+            }
+        });
     }
 }
