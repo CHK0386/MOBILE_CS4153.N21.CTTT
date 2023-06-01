@@ -37,7 +37,7 @@ public class BooksUserFragment extends Fragment {
      * @return A new instance of fragment BooksUserFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static BooksUserFragment newInstance(String param1, String param2) {
+    public static BooksUserFragment newInstance(String id, String category, String uid) {
         BooksUserFragment fragment = new BooksUserFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
