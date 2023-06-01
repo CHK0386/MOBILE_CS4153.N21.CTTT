@@ -1,4 +1,4 @@
-package com.example.bookapp;
+package com.example.bookapp.activities;
 
 import android.app.DownloadManager;
 import android.content.Intent;
@@ -11,6 +11,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.bookapp.MyApplication;
 import com.example.bookapp.databinding.ActivityPdfDetailBinding;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;

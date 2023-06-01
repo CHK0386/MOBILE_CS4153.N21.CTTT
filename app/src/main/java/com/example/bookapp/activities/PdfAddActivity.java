@@ -1,4 +1,4 @@
-package com.example.bookapp;
+package com.example.bookapp.activities;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.bookapp.R;
 import com.example.bookapp.databinding.ActivityPdfAddBinding;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;

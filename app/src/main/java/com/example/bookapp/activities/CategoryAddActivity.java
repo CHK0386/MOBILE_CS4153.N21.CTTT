@@ -1,4 +1,4 @@
-package com.example.bookapp;
+package com.example.bookapp.activities;
 
 import android.os.Bundle;
 import android.text.TextUtils;

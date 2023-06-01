@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">Book App</string>
-    <string name="new_users_signup">New Users? <b>SignUp</b></string> <!-- Make SignUn bold -->
+    <string name="new_users_signup">New Users? <b>SignUp</b></string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string> <!-- Make SignUn bold -->
 
 </resources>

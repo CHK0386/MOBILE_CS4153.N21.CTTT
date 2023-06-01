@@ -1,7 +1,5 @@
-package com.example.bookapp;
+package com.example.bookapp.activities;
 
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 
@@ -24,10 +22,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.firestore.auth.User;
 
 import java.util.HashMap;
-import java.util.Objects;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -172,7 +168,7 @@ public class RegisterActivity extends AppCompatActivity {
                         //data added to db
                         progressBar.setVisibility(View.GONE);
                         Toast.makeText(RegisterActivity.this, "Account created", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(RegisterActivity.this,DashBoardUserActivity.class));
+                        startActivity(new Intent(RegisterActivity.this, DashBoardUserActivity.class));
                         finish();
 
                     }

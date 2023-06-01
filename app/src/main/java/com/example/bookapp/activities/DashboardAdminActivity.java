@@ -1,4 +1,4 @@
-package com.example.bookapp;
+package com.example.bookapp.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -131,7 +131,7 @@ public class DashboardAdminActivity extends AppCompatActivity {
         if (firebaseUser == null) {
             //user not loggin in
             //start main screen
-            startActivity(new Intent(this,MainActivity.class));
+            startActivity(new Intent(this, MainActivity.class));
             finish();//finish this activity
         }
         else {

@@ -1,4 +1,4 @@
-package com.example.bookapp;
+package com.example.bookapp.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -40,7 +40,7 @@ public class DashBoardUserActivity extends AppCompatActivity {
         if (firebaseUser == null) {
             //user not loggin in
             //start main screen
-            startActivity(new Intent(this,MainActivity.class));
+            startActivity(new Intent(this, MainActivity.class));
             finish();//finish this activity
         }
         else {
