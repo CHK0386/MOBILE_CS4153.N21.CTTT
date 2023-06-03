@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -14,15 +16,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.bookapp.MyApplication;
 import com.example.bookapp.activities.PdfDetailActivity;
 import com.example.bookapp.databinding.RowPdfUserBinding;
+import com.example.bookapp.filters.FilterPdfUser;
 import com.example.bookapp.models.ModelPdf;
 import com.github.barteksc.pdfviewer.PDFView;
 
 import java.util.ArrayList;
 
 
-public class AdapterPdfUser extends RecyclerView.Adapter<AdapterPdfUser.HolderPdfUser>{
+public class AdapterPdfUser extends RecyclerView.Adapter<AdapterPdfUser.HolderPdfUser> implements Filterable {
     private Context context;
-    public ArrayList<ModelPdf> pdfArrayList;
+    public ArrayList<ModelPdf> pdfArrayList, filterList;
+    private FilterPdfUser filter;
 
     private RowPdfUserBinding binding;
 
@@ -31,6 +35,7 @@ public class AdapterPdfUser extends RecyclerView.Adapter<AdapterPdfUser.HolderPd
     public AdapterPdfUser(Context context, ArrayList<ModelPdf> pdfArrayList) {
         this.context = context;
         this.pdfArrayList = pdfArrayList;
+        this.filterList = pdfArrayList;
     }
 
     @NonNull
@@ -93,6 +98,14 @@ public class AdapterPdfUser extends RecyclerView.Adapter<AdapterPdfUser.HolderPd
     @Override
     public int getItemCount() {
         return pdfArrayList.size(); //return list size || number of records
+    }
+
+    @Override
+    public Filter getFilter() {
+        if(filter ==  null){
+            filter = new FilterPdfUser(filterList, this);
+        }
+        return filter;
     }
 
     class HolderPdfUser extends RecyclerView.ViewHolder{
