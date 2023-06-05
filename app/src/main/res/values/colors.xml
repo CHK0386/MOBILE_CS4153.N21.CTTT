@@ -9,5 +9,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="gray01">#cccccc</color>
     <color name="gray02">#777777</color>
+<!--    <color name="orange">#FFA500</color>-->
+<!--    <color name="yellow">#FFBF00</color>-->
 
 </resources>

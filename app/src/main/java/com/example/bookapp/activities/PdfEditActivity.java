@@ -217,14 +217,21 @@ public class PdfEditActivity extends AppCompatActivity {
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot categorySnapshot : snapshot.getChildren()) {
+                    // Get category title and id from the snapshot
+                    String categoryId = categorySnapshot.getKey();
+                    String categoryTitle = categorySnapshot.child("category").getValue(String.class);
 
+                    // Add category title and id to the respective arrays
+                    categoryIdArrayList.add(categoryId);
+                    categoryTitleArrayList.add(categoryTitle);
+                }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                Log.e(TAG, "loadCategories: Failed to load categories. " + error.getMessage());
             }
         });
-
     }
 }
